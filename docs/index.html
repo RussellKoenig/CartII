@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <meta name = "viewport" content = "initial-scale = 1, maximum-scale=1, user-scalable=no">
+        <title>Crime in Major US Cities</title>
+        <style>
+            html, body,
+            
+            #viewDiv{
+                padding: 0;
+                margin: 0;
+                height: 94%;
+                width: 100%;
+                background-color: cadetblue;
+                }
+            #contentDiv{
+                padding:0;
+                margin:0;
+                height:100%;
+                width:100;
+                }
+            #secviewsDiv{
+                padding:0;
+                margin:0;
+                height:100%;
+                width:100%
+                }
+            #legendDiv{
+                border: 1px solid cadetblue;
+                padding: 0;
+                float: left;
+                left: 0;
+                margin: 0;
+                height: 100%;
+                width: 19.5%
+                }
+            #viewDiv1{
+                padding: 0;
+                float: left;
+                left: 0;
+                margin: 0;
+                height: 100%;
+                width: 59.5%
+                }
+            #viewDiv{
+                padding: 0;
+                float: right;
+                left: 0;
+                margin: 0;
+                height: 100%;
+                width: 39.5%
+                }
+            #viewDiv2{
+                padding: 0;
+                float: top;
+                left: 0;
+                margin: 0;
+                height: 48.75%;
+                width: 99.5%
+                }
+            #viewDiv3{
+                padding: 0;
+                float: left;
+                left: 0;
+                margin: 0;
+                height: 48.75%;
+                width: 100%
+                }
+            #allviewDiv{
+                padding: 0;
+                background-color: cadetblue;
+                float: right;
+                left: 0;
+                margin: 0;
+                height: 100%;
+                width: 80%
+                }
+            #contentDiv{
+                padding: 0;
+                background-color: cadetblue;
+                float: right;
+                left: 0;
+                margin: 0;
+                height: 90%;
+                width: 100%
+                }
+            #titlesDiv{
+                float: bottom;
+                height: 5%;
+                width: 50%;
+                background-color: cadetblue;
+                color: white;
+                text-align: center;
+                font-weight: 400;
+                font-size: 20px;
+                font-family: sans-serif
+                }
+            #crimetitleDiv{
+                float: left;
+                height: 25px;
+                width: 48%;
+                background-color: cadetblue;
+                color: white;
+                text-align: center;
+                font-weight: 400;
+                font-size: 20px;
+                font-family: sans-serif
+                }
+            #legendtitleDiv{
+                float: left;
+                height: 25px;
+                width: 20%;
+                background-color: cadetblue;
+                color: white;
+                text-align: center;
+                font-weight: 400;
+                font-size: 20px;
+                font-family: sans-serif
+                }
+            #incometitleDiv{
+                float: left;
+                height: 25px;
+                width: 32%;
+                background-color: cadetblue;
+                color: white;
+                text-align: center;
+                font-weight: 400;
+                font-size: 20px;
+                font-family: sans-serif
+                }
+            #unemploymenttitleDiv{
+                float: bottom;
+                height: 2.5%;
+                width: 100%;
+                background-color: cadetblue;
+                color: white;
+                text-align: center;
+                font-weight: 400;
+                font-size: 20px;
+                font-family: sans-serif
+                }
+            #header1{
+                width: 100%;
+                background-color: cadetblue;
+                height: 95%;
+                text-align: center;
+                color: white;
+                font-family: sans-serif
+                }
+            
+            </style>
+        <link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css">
+        <script src="https://js.arcgis.com/4.34/"></script>
+        <script>
+            require([
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/layers/FeatureLayer",
+                "esri/symbols/SimpleFillSymbol",
+                "esri/renderers/SimpleRenderer",
+                "esri/widgets/LayerList"
+                
+                ], function(Map, MapView, FeatureLayer, SimpleFillSymbol, SimpleRenderer, LayerList)
+                    {
+                
+                //Main map view with cities
+                var map = new Map({
+                    basemap: "gray"
+                    });
+                
+                var view = new MapView({
+                    container: "viewDiv1",
+                    map: map,
+                    center: [-98.542152, 39.224087],
+                    zoom: 3
+                    });
+                
+                const cities = new FeatureLayer({
+                    portalItem: {
+                        id: "fe01b90b1e354eba965012ccd08efb14"
+                        },
+                    title:"REPORTED CRIMES"
+                    });
+                
+                map.add(cities);
+                
+                //Second map (top-right-view) Income
+                var map2 = new Map({
+                    basemap: "gray"
+                    });
+                
+                var view2 = new MapView({
+                    container: "viewDiv2",
+                    map: map2,
+                    center: [-98.542152, 39.224087],
+                    zoom: 2
+                    });
+                
+                const income = new FeatureLayer({
+                    portalItem: {
+                        id: "e33da048f4ba41728b2ba0017c572ad8"
+                        },
+                    title:"INCOME"
+                    });
+                
+                map2.add(income);
+                
+                //Third map (bottom-right-view) Unemployment
+                var map3 = new Map({
+                    basemap: "gray"
+                    });
+                
+                var view3 = new MapView({
+                    container: "viewDiv3",
+                    map: map3,
+                    center: [-98.542152, 39.224087],
+                    zoom: 2
+                    });
+                
+                const unemployment = new FeatureLayer({
+                    portalItem: {
+                        id: "f1eeb3b0ed834a2da57a8609be31f392"
+                        },
+                    title:"UNEMPLOYMENT"
+                    });
+                
+                map3.add(unemployment);
+                
+                //Sync views
+                
+                const views = [view, view2, view3];
+                let active;
+                
+                const sync = (source) => {
+                    if(!active || !active.viewpoint || active !== source) {
+                        return;
+                        }
+                    
+                    for (const view of views) {
+                        if(view !== active) {
+                            view.viewpoint = active.viewpoint;
+                            }
+                        }
+                    };
+                
+                for (const view of views) {
+                    view.watch(["interacting", "animation"], () => {
+                        active = view;
+                        sync(active);
+                        });
+                    
+                    view.watch("viewpoint", () => sync(view));
+                    }
+                
+                //Add Legend
+                const layerListsContainer = document.createElement("div");
+                document.getElementById("legendDiv").appendChild(layerListsContainer);
+                
+                const layerlists = [
+                    new LayerList({
+                        //container: "legendDiv",
+                        view: view,
+                        listItemCreatedFunction: function(event){
+                            const item = event.item;
+                            if(item.layer.type !="group"){
+                                item.panel = {
+                                    content: "legend",
+                                    open: true
+                                    };
+                                }
+                            }
+                        }),
+                    
+                    new LayerList({
+                        //container: "legendDiv",
+                        view: view2,
+                        listItemCreatedFunction: function(event){
+                            const item = event.item;
+                            if(item.layer.type !="group"){
+                                item.panel = {
+                                    content: "legend",
+                                    open: true
+                                    };
+                                }
+                            }
+                        }),
+                    
+                    new LayerList({
+                        //container: "legendDiv",
+                        view: view3,
+                        listItemCreatedFunction: function(event){
+                            const item = event.item;
+                            if(item.layer.type !="group"){
+                                item.panel = {
+                                    content: "legend",
+                                    open: true
+                                    };
+                                }
+                            }
+                        })
+                    ];
+                
+                layerlists.forEach(layerList => {
+                    const container = document.createElement("div");
+                    layerListsContainer.appendChild(container);
+                    layerList.container = container;
+                    });
+                });
+            
+            </script>
+        </head>
+    <body>
+        <div id="header1"; style="display: table; height: 15px; overflow: hidden;">
+            <h1 style="vertical-align: middle">Crime in Major Cities Across the U.S. (2024)</h1>
+        </div>
+        <div id = "legendtitleDiv">Legend</div>
+        <div id = "crimetitleDiv">Reported Crime Incidents</div>
+        <div id = "incometitleDiv">Income</div>
+        <div id = "legendDiv"></div>
+        <div id = "allviewDiv">
+            <div id = "viewDiv1"></div>
+            <div id = "viewDiv">
+                <div id = "viewDiv2"></div>
+                <div id = "unemploymenttitleDiv">Unemployment</div>
+                <div id = "viewDiv3"></div>
+            </div>
+        </div>
+    </body>    
+</html>
